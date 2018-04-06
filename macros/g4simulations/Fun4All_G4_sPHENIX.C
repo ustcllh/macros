@@ -4,9 +4,18 @@ using namespace std;
 int Fun4All_G4_sPHENIX(
     const int nEvents = 1,
     const char *inputFile = "/sphenix/sim/sim01/sHijing/sHijing_9-11fm.dat",
+    const char *outputdir = "./",
     const char *outputFile = "G4sPHENIX.root",
+    const int skip = 0,
     const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
+  char tmpoutputdir[300];
+  char fulloutfile[1000];
+  sprintf(tmpoutputdir,"%s/ongoing",outputdir);
+  sprintf(fulloutfile,"%s/%s",tmpoutputdir,outputFile);
+  char mkdircmd[1000];
+  sprintf(mkdircmd,"mkdir -p %s",tmpoutputdir);
+  gSystem->Exec(mkdircmd);
 
   //===============
   // Input options
@@ -508,7 +517,7 @@ int Fun4All_G4_sPHENIX(
                 /*bool*/ do_hcalout_twr);
   }
 
-  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", fulloutfile);
   if (do_dst_compress) DstCompress(out);
     se->registerOutputManager(out);
 
@@ -527,6 +536,7 @@ int Fun4All_G4_sPHENIX(
     return;
   }
 
+  se->skip(skip);
   se->run(nEvents);
 
   //-----
@@ -536,5 +546,8 @@ int Fun4All_G4_sPHENIX(
   se->End();
   std::cout << "All done" << std::endl;
   delete se;
+  char mvcmd[1000];
+  sprintf(mvcmd,"mv %s %s",fulloutfile,outputdir);
+  gSystem->Exec(mvcmd);
   gSystem->Exit(0);
 }
