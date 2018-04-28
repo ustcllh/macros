@@ -15,7 +15,7 @@ enu_HCalOut_clusterizer HCalOut_clusterizer = kHCalOutTemplateClusterizer;
 
 // whether to simulate and reconstruct with dead channels. Introduced for Threshold KPP studies
 bool HCalOut_deadChannelStudy = true;
-std::string HCalOut_deadChannelCalibFolder = "HCALOUT/DeadMap_10Percent";
+std::string HCalOut_deadChannelCalibFolder = "HCALOUT/DeadMap_5Percent";
 
 // Init is called by G4Setup.C
 void HCalOuterInit(){}

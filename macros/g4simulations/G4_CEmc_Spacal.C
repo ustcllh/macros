@@ -10,7 +10,7 @@ int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
 // whether to simulate and reconstruct with dead channels. Introduced for Threshold KPP studies
 bool Cemc_deadChannelStudy = true;
-std::string Cemc_deadChannelCalibFolder = "CEMC/DeadMap_10Percent";
+std::string Cemc_deadChannelCalibFolder = "CEMC/DeadMap_5Percent";
 
 enum enu_Cemc_clusterizer
 {

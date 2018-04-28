@@ -20,7 +20,7 @@ enu_HCalIn_clusterizer HCalIn_clusterizer = kHCalInTemplateClusterizer;
 
 // whether to simulate and reconstruct with dead channels. Introduced for Threshold KPP studies
 bool HCalIn_deadChannelStudy = true;
-std::string HCalIn_deadChannelCalibFolder = "HCALIN/DeadMap_10Percent";
+std::string HCalIn_deadChannelCalibFolder = "HCALIN/DeadMap_5Percent";
 
 // Init is called by G4Setup.C
 void HCalInnerInit() {}
