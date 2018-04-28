@@ -12,6 +12,11 @@ enu_HCalOut_clusterizer HCalOut_clusterizer = kHCalOutTemplateClusterizer;
 //! graph clusterizer, RawClusterBuilderGraph
 //enu_HCalOut_clusterizer HCalOut_clusterizer = kHCalOutGraphClusterizer;
 
+
+// whether to simulate and reconstruct with dead channels. Introduced for Threshold KPP studies
+bool HCalOut_deadChannelStudy = true;
+std::string HCalOut_deadChannelCalibFolder = "HCALOUT/DeadMap_10Percent";
+
 // Init is called by G4Setup.C
 void HCalOuterInit(){}
 
@@ -106,6 +111,14 @@ void HCALOuter_Towers(int verbosity = 0) {
   gSystem->Load("libg4calo.so");
   gSystem->Load("libcalo_reco.so");
   Fun4AllServer *se = Fun4AllServer::instance();
+
+  if (HCalOut_deadChannelStudy)
+  {
+    RawTowerDeadMapLoader * deadMaper = new RawTowerDeadMapLoader("HCALOUT");
+    deadMaper->deadMapPath(string(getenv("CALIBRATIONROOT")) + string("/") + HCalOut_deadChannelCalibFolder + string("/"));
+    deadMaper->Verbosity(verbosity);
+    se->registerSubsystem(deadMaper);
+  }
   
   HcalRawTowerBuilder* TowerBuilder = new HcalRawTowerBuilder("HcalOutRawTowerBuilder");
   TowerBuilder->Detector("HCALOUT");
@@ -138,6 +151,13 @@ void HCALOuter_Towers(int verbosity = 0) {
   TowerCalibration->set_zero_suppression_GeV(-1); // no-zero suppression
   se->registerSubsystem(TowerCalibration);
 
+  if (HCalOut_deadChannelStudy)
+  {
+    RawTowerDeadTowerInterp * deadtower_interplate = new RawTowerDeadTowerInterp();
+    deadtower_interplate->detector("HCALOUT");
+    deadtower_interplate->Verbosity(verbosity);
+    se->registerSubsystem(deadtower_interplate);
+  }
   return;
 }
 
@@ -167,6 +187,14 @@ void HCALOuter_Clusters(int verbosity = 0) {
     exit(1);
   }
 
+  if (HCalOut_deadChannelStudy)
+  {
+    RawClusterDeadAreaMask * deadMask = new RawClusterDeadAreaMask();
+    deadMask->detector("HCALOUT");
+    deadMask->deadTowerMaskHalfWidth(1.4);
+    deadMask->Verbosity(verbosity);
+    se->registerSubsystem(deadMask);
+  }
   
   return;
 }

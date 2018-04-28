@@ -8,6 +8,10 @@ int Max_cemc_layer = 1;
 //   2D azimuthal projective SPACAL (slow)
 int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
+// whether to simulate and reconstruct with dead channels. Introduced for Threshold KPP studies
+bool Cemc_deadChannelStudy = true;
+std::string Cemc_deadChannelCalibFolder = "CEMC/DeadMap_10Percent";
+
 enum enu_Cemc_clusterizer
 {
   kCemcGraphClusterizer,
@@ -301,6 +305,14 @@ void CEMC_Towers(int verbosity = 0)
   gSystem->Load("libcalo_reco.so");
   Fun4AllServer *se = Fun4AllServer::instance();
 
+  if (Cemc_deadChannelStudy)
+  {
+    RawTowerDeadMapLoader * deadMaper = new RawTowerDeadMapLoader("CEMC");
+    deadMaper->deadMapPath(string(getenv("CALIBRATIONROOT")) + string("/") + Cemc_deadChannelCalibFolder + string("/"));
+    deadMaper->Verbosity(verbosity);
+    se->registerSubsystem(deadMaper);
+  }
+
   RawTowerBuilder *TowerBuilder = new RawTowerBuilder("EmcRawTowerBuilder");
   TowerBuilder->Detector("CEMC");
   TowerBuilder->set_sim_tower_node_prefix("SIM");
@@ -372,6 +384,14 @@ void CEMC_Towers(int verbosity = 0)
     return;
   }
 
+  if (Cemc_deadChannelStudy)
+  {
+    RawTowerDeadTowerInterp * deadtower_interplate = new RawTowerDeadTowerInterp();
+    deadtower_interplate->detector("CEMC");
+    deadtower_interplate->Verbosity(verbosity);
+    se->registerSubsystem(deadtower_interplate);
+  }
+
   return;
 }
 
@@ -400,6 +420,14 @@ void CEMC_Clusters(int verbosity = 0)
     exit(1);
   }
 
+  if (Cemc_deadChannelStudy)
+  {
+    RawClusterDeadAreaMask * deadMask = new RawClusterDeadAreaMask();
+    deadMask->detector("CEMC");
+    deadMask->deadTowerMaskHalfWidth(1.4);
+    deadMask->Verbosity(verbosity);
+    se->registerSubsystem(deadMask);
+  }
 
   RawClusterPositionCorrection *clusterCorrection = new RawClusterPositionCorrection("CEMC");
 
