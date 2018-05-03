@@ -1,4 +1,9 @@
 
+// whether to introduce miss-calibration on the towers
+bool HCalOut_deadChannelStudy = true;
+std::string HCalOut_TowerCalibrationFolder = HCalOut_deadChannelStudy ?
+    "HCALOUT/TowerCalib_MisCalib3Percent/" // introduce extra 3% miscalibration
+    : "NONE";
 
 enum enu_HCalOut_clusterizer
 {
@@ -149,6 +154,13 @@ void HCALOuter_Towers(int verbosity = 0) {
   TowerCalibration->set_calib_const_GeV_ADC(0.2e-3 / visible_sample_fraction_HCALOUT);
   TowerCalibration->set_pedstal_ADC(0);
   TowerCalibration->set_zero_suppression_GeV(-1); // no-zero suppression
+
+  if (HCalOut_deadChannelStudy)
+  {
+    TowerCalibration->GetCalibrationParameters().ReadFromFile("HCALOUT","xml",0,0,
+            string(getenv("CALIBRATIONROOT")) + string("/") + HCalOut_TowerCalibrationFolder); // calibration database
+  }
+
   se->registerSubsystem(TowerCalibration);
 
   if (HCalOut_deadChannelStudy)
