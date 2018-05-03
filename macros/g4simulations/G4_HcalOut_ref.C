@@ -157,6 +157,9 @@ void HCALOuter_Towers(int verbosity = 0) {
 
   if (HCalOut_deadChannelStudy)
   {
+    //overwrite carlibtion to tower-by-tower mode
+    TowerCalibration->set_calib_algorithm(RawTowerCalibration::kTower_by_tower_calibration);
+
     TowerCalibration->GetCalibrationParameters().ReadFromFile("HCALOUT","xml",0,0,
             string(getenv("CALIBRATIONROOT")) + string("/") + HCalOut_TowerCalibrationFolder); // calibration database
   }
