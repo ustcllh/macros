@@ -200,6 +200,9 @@ void HCALInner_Towers(int verbosity = 0) {
 
   if (HCalIn_deadChannelStudy)
   {
+    //overwrite carlibtion to tower-by-tower mode
+    TowerCalibration->set_calib_algorithm(RawTowerCalibration::kTower_by_tower_calibration);
+
     TowerCalibration->GetCalibrationParameters().ReadFromFile("HCALIN","xml",0,0,
             string(getenv("CALIBRATIONROOT")) + string("/") + HCalIn_TowerCalibrationFolder); // calibration database
   }
