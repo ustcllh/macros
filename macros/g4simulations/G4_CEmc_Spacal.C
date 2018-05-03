@@ -8,6 +8,14 @@ int Max_cemc_layer = 1;
 //   2D azimuthal projective SPACAL (slow)
 int Cemc_spacal_configuration = PHG4CylinderGeom_Spacalv1::k2DProjectiveSpacal;
 
+
+
+// whether to introduce miss-calibration on the towers
+bool Cemc_deadChannelStudy = true;
+std::string Cemc_TowerCalibrationFolder = Cemc_deadChannelStudy ?
+    "CEMC/TowerCalib_2017ProjTilted_MisCalib3Percent/" // introduce extra 3% miscalibration
+    : "CEMC/TowerCalib_2017ProjTilted/";  // nominal t-by-t calibration file as in https://github.com/sPHENIX-Collaboration/coresoftware/pull/331
+
 enum enu_Cemc_clusterizer
 {
   kCemcGraphClusterizer,
@@ -358,7 +366,7 @@ void CEMC_Towers(int verbosity = 0)
     TowerCalibration->Verbosity(verbosity);
     TowerCalibration->set_calib_algorithm(RawTowerCalibration::kTower_by_tower_calibration);
     TowerCalibration->GetCalibrationParameters().ReadFromFile("CEMC","xml",0,0,
-        string(getenv("CALIBRATIONROOT")) + string("/CEMC/TowerCalib_2017ProjTilted/")); // calibration database
+        string(getenv("CALIBRATIONROOT")) + string("/") + Cemc_TowerCalibrationFolder); // calibration database
     TowerCalibration->set_calib_const_GeV_ADC(1. / photoelectron_per_GeV / 0.9715 ); // overall energy scale based on 4-GeV photon simulations
     TowerCalibration->set_pedstal_ADC(0);
     se->registerSubsystem(TowerCalibration);

@@ -5,6 +5,11 @@
 //true - Choose if you want Aluminum
 const bool inner_hcal_material_Al = true;
 
+// whether to introduce miss-calibration on the towers
+bool HCalIn_deadChannelStudy = true;
+std::string HCalIn_TowerCalibrationFolder = HCalIn_deadChannelStudy ?
+    "HCALIN/TowerCalib_MisCalib3Percent/" // introduce extra 3% miscalibration
+    : "NONE";
 
 enum enu_HCalIn_clusterizer
 {
@@ -192,6 +197,13 @@ void HCALInner_Towers(int verbosity = 0) {
   TowerCalibration->set_calib_const_GeV_ADC(0.4e-3 / visible_sample_fraction_HCALIN);
   TowerCalibration->set_pedstal_ADC(0);
   TowerCalibration->set_zero_suppression_GeV(-1); // no-zero suppression
+
+  if (HCalIn_deadChannelStudy)
+  {
+    TowerCalibration->GetCalibrationParameters().ReadFromFile("HCALIN","xml",0,0,
+            string(getenv("CALIBRATIONROOT")) + string("/") + HCalIn_TowerCalibrationFolder); // calibration database
+  }
+
   se->registerSubsystem(TowerCalibration);
 
   return;
