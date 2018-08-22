@@ -27,7 +27,7 @@ double HCalInner(PHG4Reco* g4Reco,
 		 const int crossings,
 		 const int absorberactive = 0,
 		 int verbosity = 0) {
-  // all sizes are in cm!  
+  // all sizes are in cm!
 
   gSystem->Load("libg4detectors.so");
   gSystem->Load("libg4testbench.so");
@@ -74,10 +74,10 @@ double HCalInner(PHG4Reco* g4Reco,
   // hcal->set_int_param("n_scinti_tiles", 12);
 
   // hcal->set_string_param("material", "SS310");
-  
+
   hcal->SetActive();
   hcal->SuperDetector("HCALIN");
-  if (absorberactive)  
+  if (absorberactive)
     {
       hcal->SetAbsorberActive();
     }
@@ -88,7 +88,7 @@ double HCalInner(PHG4Reco* g4Reco,
   radius = hcal->get_double_param("outer_radius");
 
   HCalInner_SupportRing(g4Reco,absorberactive);
-  
+
   radius += no_overlapp;
   return radius;
 }
@@ -96,7 +96,7 @@ double HCalInner(PHG4Reco* g4Reco,
 //! A rough version of the inner HCal support ring, from Richie's CAD drawing. - Jin
 void HCalInner_SupportRing(PHG4Reco* g4Reco,
 			   const int absorberactive = 0) {
-  
+
   gSystem->Load("libg4detectors.so");
   gSystem->Load("libg4testbench.so");
 
@@ -127,7 +127,7 @@ void HCalInner_SupportRing(PHG4Reco* g4Reco,
 	}
       g4Reco->registerSubsystem(cyl);
     }
-  
+
   return;
 }
 
@@ -142,16 +142,16 @@ void HCALInner_Cells(int verbosity = 0) {
   hc->Detector("HCALIN");
   //  hc->Verbosity(2);
   // check for energy conservation - needs modified "infinite" timing cuts
-  // 0-999999999 
+  // 0-999999999
   //  hc->checkenergy();
   // timing cuts with their default settings
-  // hc->set_double_param("tmin",0.); 
-  // hc->set_double_param("tmax",60.0); 
+  // hc->set_double_param("tmin",0.);
+  // hc->set_double_param("tmax",60.0);
   // or all at once:
   // hc->set_timing_window(0.0,60.0);
   se->registerSubsystem(hc);
-  
-  return;  
+
+  return;
 }
 
 void HCALInner_Towers(int verbosity = 0) {
@@ -159,7 +159,7 @@ void HCALInner_Towers(int verbosity = 0) {
   gSystem->Load("libg4calo.so");
   gSystem->Load("libcalo_reco.so");
   Fun4AllServer *se = Fun4AllServer::instance();
-  
+
   HcalRawTowerBuilder *TowerBuilder = new HcalRawTowerBuilder("HcalInRawTowerBuilder");
   TowerBuilder->Detector("HCALIN");
   TowerBuilder->set_sim_tower_node_prefix("SIM");
@@ -201,7 +201,7 @@ void HCALInner_Clusters(int verbosity = 0) {
   gSystem->Load("libcalo_reco.so");
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  
+
   if (HCalIn_clusterizer == kHCalInTemplateClusterizer)
   {
     RawClusterBuilderTemplate* ClusterBuilder = new RawClusterBuilderTemplate("HcalInRawClusterBuilderTemplate");
@@ -231,10 +231,10 @@ void HCALInner_Eval(std::string outputfile, int verbosity = 0) {
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4eval.so");
   Fun4AllServer *se = Fun4AllServer::instance();
-    
+
   CaloEvaluator* eval = new CaloEvaluator("HCALINEVALUATOR", "HCALIN", outputfile.c_str());
   eval->Verbosity(verbosity);
   se->registerSubsystem( eval );
-      
+
   return;
 }
